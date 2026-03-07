@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Panel</title>
+</head>
+
+<body>
+
+<h2>Add Product</h2>
+
+<input id="name" placeholder="Product Name"><br><br>
+<input id="price" placeholder="Price"><br><br>
+<input id="image" placeholder="Image URL"><br><br>
+
+<button onclick="addProduct()">Add Product</button>
+
+<h2>All Products</h2>
+<div id="productList"></div>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyANXW3CGn3ofb3gzb3CpXCw9oLebaAxiWI",
+    authDomain: "cartly-store.firebaseapp.com",
+    projectId: "cartly-store",
+    storageBucket: "cartly-store.firebasestorage.app",
+    messagingSenderId: "836220022823",
+    appId: "1:836220022823:web:ae9155eacd7d777df21e02",
+    measurementId: "G-65TKHGF6P8"
+  };
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const ordersDiv = document.getElementById("orders");
+
+async function loadOrders(){
+
+const querySnapshot = await getDocs(collection(db,"orders"));
+
+querySnapshot.forEach((doc)=>{
+
+const order = doc.data();
+
+const div = document.createElement("div");
+div.className="order";
+
+div.innerHTML = `
+<b>Name:</b> ${order.name} <br>
+<b>Phone:</b> ${order.phone} <br>
+<b>Address:</b> ${order.address} <br>
+<b>Items:</b> ${JSON.stringify(order.cart)} <br>
+<hr>
+`;
+
+ordersDiv.appendChild(div);
+
+});
+
+}
+
+loadOrders();
+
+</script>
+<script>
+
+function addProduct(){
+
+const name = document.getElementById("name").value;
+const price = document.getElementById("price").value;
+const image = document.getElementById("image").value;
+
+let adminProducts =
+JSON.parse(localStorage.getItem("adminProducts")) || [];
+
+const newProduct = {
+id: Date.now(),
+name,
+price,
+image
+};
+
+adminProducts.push(newProduct);
+
+localStorage.setItem("adminProducts",
+JSON.stringify(adminProducts));
+
+showProducts();
+}
+
+function showProducts(){
+
+let adminProducts =
+JSON.parse(localStorage.getItem("adminProducts")) || [];
+
+const list = document.getElementById("productList");
+
+list.innerHTML = "";
+
+adminProducts.forEach(product => {
+
+list.innerHTML += `
+<div>
+<img src="${product.image}" width="80">
+<p>${product.name}</p>
+<p>₹${product.price}</p>
+<button onclick="deleteProduct(${product.id})">Delete</button>
+</div>
+`;
+
+});
+
+}
+
+function deleteProduct(id){
+
+let adminProducts =
+JSON.parse(localStorage.getItem("adminProducts")) || [];
+
+adminProducts =
+adminProducts.filter(p => p.id !== id);
+
+localStorage.setItem("adminProducts",
+JSON.stringify(adminProducts));
+
+showProducts();
+
+}
+
+showProducts();
+
+</script>
+
+</body>
+</html>

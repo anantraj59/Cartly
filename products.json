@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "Car Cleaning Brush",
+    "price": 299,
+    "category": "car",
+    "image": "1.jpg",
+    "description": "Soft bristle brush perfect for cleaning car interiors and dashboards."
+  },
+  {
+    "id": 2,
+    "name": "Desk Organizer",
+    "price": 499,
+    "category": "desk",
+    "image": "https://via.placeholder.com/200"
+  },
+  {
+    "id": 3,
+    "name": "Pet Hair Remover",
+    "price": 399,
+    "category": "pet",
+    "image": "https://via.placeholder.com/200"
+  }
+]
