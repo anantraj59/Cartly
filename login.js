@@ -8,15 +8,17 @@ GoogleAuthProvider,
 signInWithPopup,
 RecaptchaVerifier,
 signInWithPhoneNumber
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 const firebaseConfig = {
 
-apiKey: "YOUR_KEY",
-authDomain: "YOUR_DOMAIN",
-projectId: "YOUR_PROJECT_ID"
+apiKey: "AIzaSyANXW3CGn3ofb3gzb3CpXCw9oLebaAxiWI",
+authDomain: "cartly-store.firebaseapp.com",
+projectId: "cartly-store",
+storageBucket: "cartly-store.firebasestorage.app",
+messagingSenderId: "836220022823",
+appId: "1:836220022823:web:ae9155eacd7d777df21e02"
 
 };
 
@@ -31,10 +33,16 @@ const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
 createUserWithEmailAndPassword(auth,email,password)
-.then(()=>alert("Signup Success"))
-.catch(e=>alert(e.message));
+.then(()=>{
+
+alert("Signup successful");
+window.location.href="index.html";
+
+})
+.catch(err=>alert(err.message));
 
 }
+
 
 
 window.login = function(){
@@ -43,8 +51,13 @@ const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
 signInWithEmailAndPassword(auth,email,password)
-.then(()=>alert("Login Success"))
-.catch(e=>alert(e.message));
+.then(()=>{
+
+alert("Login successful");
+window.location.href="index.html";
+
+})
+.catch(err=>alert(err.message));
 
 }
 
@@ -55,14 +68,19 @@ window.googleLogin = function(){
 const provider = new GoogleAuthProvider();
 
 signInWithPopup(auth,provider)
-.then(()=>alert("Google Login Success"))
-.catch(e=>alert(e.message));
+.then(()=>{
+
+alert("Google login success");
+window.location.href="index.html";
+
+})
+.catch(err=>alert(err.message));
 
 }
 
 
 
-window.recaptchaVerifier = new RecaptchaVerifier(auth,'recaptcha',{});
+window.recaptchaVerifier = new RecaptchaVerifier(auth,'recaptcha-container',{});
 
 window.sendOTP = function(){
 
@@ -86,6 +104,11 @@ window.verifyOTP = function(){
 const code = document.getElementById("otp").value;
 
 confirmationResult.confirm(code)
-.then(()=>alert("Phone Login Success"));
+.then(()=>{
+
+alert("Phone login success");
+window.location.href="index.html";
+
+});
 
 }
