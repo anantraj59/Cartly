@@ -1,137 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Admin Panel</title>
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | Study Sphere</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Background & font */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      overflow: hidden;
+    }
 
+    /* Glass container */
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 50px;
+      width: 350px;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+      text-align: center;
+      color: #fff;
+    }
+
+    h2 {
+      margin-bottom: 40px;
+      color: red;
+      text-shadow: 0 0 10px #0ff;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px #0ff;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      border: none;
+      background: red;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+      box-shadow: 0 0 20px #0ff;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px red;
+    }
+
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #0ff;
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 6s infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-200px) translateX(50px); }
+      100% { transform: translateY(0) translateX(0); }
+    }
+
+    @media(max-width: 400px){
+      .glass {
+        width: 90%;
+        padding: 30px;
+      }
+    }
+  </style>
+</head>
 <body>
 
-<h2>Add Product</h2>
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
 
-<input id="name" placeholder="Product Name"><br><br>
-<input id="price" placeholder="Price"><br><br>
-<input id="image" placeholder="Image URL"><br><br>
+  <div class="glass">
+    <h2>ADMIN LOGIN ONLY</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
 
-<button onclick="addProduct()">Add Product</button>
+  <script>
+    // 🔹 Fixed client-side username/password
+    const correctUsername = "admin";  // Set your username
+    const correctPassword = "1234";   // Set your password
 
-<h2>All Products</h2>
-<div id="productList"></div>
-<script type="module">
+    document.getElementById("loginForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const enteredUsername = document.getElementById("username").value;
+      const enteredPassword = document.getElementById("password").value;
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      if(enteredUsername === correctUsername && enteredPassword === correctPassword){
+        alert("Login Successful!");
+        window.location.href = "dashboard.html"; // Change to your admin page
+      } else {
+        alert("Invalid username or password");
+      }
+    });
 
-const firebaseConfig = {
-    apiKey: "AIzaSyANXW3CGn3ofb3gzb3CpXCw9oLebaAxiWI",
-    authDomain: "cartly-store.firebaseapp.com",
-    projectId: "cartly-store",
-    storageBucket: "cartly-store.firebasestorage.app",
-    messagingSenderId: "836220022823",
-    appId: "1:836220022823:web:ae9155eacd7d777df21e02",
-    measurementId: "G-65TKHGF6P8"
-  };
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const ordersDiv = document.getElementById("orders");
-
-async function loadOrders(){
-
-const querySnapshot = await getDocs(collection(db,"orders"));
-
-querySnapshot.forEach((doc)=>{
-
-const order = doc.data();
-
-const div = document.createElement("div");
-div.className="order";
-
-div.innerHTML = `
-<b>Name:</b> ${order.name} <br>
-<b>Phone:</b> ${order.phone} <br>
-<b>Address:</b> ${order.address} <br>
-<b>Items:</b> ${JSON.stringify(order.cart)} <br>
-<hr>
-`;
-
-ordersDiv.appendChild(div);
-
-});
-
-}
-
-loadOrders();
-
-</script>
-<script>
-
-function addProduct(){
-
-const name = document.getElementById("name").value;
-const price = document.getElementById("price").value;
-const image = document.getElementById("image").value;
-
-let adminProducts =
-JSON.parse(localStorage.getItem("adminProducts")) || [];
-
-const newProduct = {
-id: Date.now(),
-name,
-price,
-image
-};
-
-adminProducts.push(newProduct);
-
-localStorage.setItem("adminProducts",
-JSON.stringify(adminProducts));
-
-showProducts();
-}
-
-function showProducts(){
-
-let adminProducts =
-JSON.parse(localStorage.getItem("adminProducts")) || [];
-
-const list = document.getElementById("productList");
-
-list.innerHTML = "";
-
-adminProducts.forEach(product => {
-
-list.innerHTML += `
-<div>
-<img src="${product.image}" width="80">
-<p>${product.name}</p>
-<p>₹${product.price}</p>
-<button onclick="deleteProduct(${product.id})">Delete</button>
-</div>
-`;
-
-});
-
-}
-
-function deleteProduct(id){
-
-let adminProducts =
-JSON.parse(localStorage.getItem("adminProducts")) || [];
-
-adminProducts =
-adminProducts.filter(p => p.id !== id);
-
-localStorage.setItem("adminProducts",
-JSON.stringify(adminProducts));
-
-showProducts();
-
-}
-
-showProducts();
-
-</script>
-
+    // 🔹 Generate floating particles
+    const particlesContainer = document.getElementById("particles");
+    for(let i = 0; i < 30; i++){
+      const p = document.createElement("div");
+      p.classList.add("particle");
+      p.style.top = Math.random()*100 + "%";
+      p.style.left = Math.random()*100 + "%";
+      p.style.width = p.style.height = (5 + Math.random()*10) + "px";
+      p.style.animationDuration = (4 + Math.random()*4) + "s";
+      particlesContainer.appendChild(p);
+    }
+  </script>
 </body>
 </html>

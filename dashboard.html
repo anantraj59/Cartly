@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | Danger Red Dynamic</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #1a0a0a, #3d0d0d, #1f0c0c);
+  color: #fff;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Floating red circles */
+.floating-circle {
+  width: 25px;
+  height: 25px;
+  background: rgba(255,0,0,0.05);
+  border-radius: 50%;
+  position: absolute;
+  animation: float 12s infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-200px) translateX(50px); }
+  100% { transform: translateY(0) translateX(0); }
+}
+
+/* Container */
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(50,0,0,0.3);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 40px rgba(255,0,0,0.4);
+  transition: box-shadow 1s ease-in-out;
+}
+
+/* Panels pulse effect */
+.container:hover {
+  box-shadow: 0 0 60px rgba(255,0,0,0.6);
+}
+
+/* Headers */
+h2 {
+  color: #ff4c4c;
+  text-shadow: 0 0 10px #ff1a1a;
+  margin-bottom: 20px;
+  text-align: center;
+  animation: pulseHeader 2s infinite;
+}
+
+@keyframes pulseHeader {
+  0% { text-shadow: 0 0 10px #ff1a1a; }
+  50% { text-shadow: 0 0 20px #ff4c4c; }
+  100% { text-shadow: 0 0 10px #ff1a1a; }
+}
+
+/* Inputs */
+input {
+  width: calc(33% - 10px);
+  padding: 12px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,0,0,0.1);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+  background: rgba(255,0,0,0.2);
+  box-shadow: 0 0 10px rgba(255,0,0,0.3);
+}
+
+/* Buttons */
+button {
+  padding: 12px 25px;
+  border-radius: 10px;
+  border: none;
+  background: #ff4c4c;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 15px rgba(255,0,0,0.5);
+  animation: pulseButton 2s infinite;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(255,0,0,0.7);
+}
+
+@keyframes pulseButton {
+  0% { box-shadow: 0 0 15px rgba(255,0,0,0.5); }
+  50% { box-shadow: 0 0 30px rgba(255,0,0,0.7); }
+  100% { box-shadow: 0 0 15px rgba(255,0,0,0.5); }
+}
+
+/* Product list */
+#productList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+#productList div {
+  width: 150px;
+  background: rgba(255,0,0,0.1);
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(255,0,0,0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#productList div:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255,0,0,0.5);
+}
+
+#productList img {
+  width: 80px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* Orders */
+.order {
+  background: rgba(255,0,0,0.1);
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 15px rgba(255,0,0,0.3);
+  transition: box-shadow 0.3s;
+}
+
+.order:hover {
+  box-shadow: 0 0 30px rgba(255,0,0,0.5);
+}
+
+@media(max-width: 400px){
+  input { width: 90%; }
+}
+</style>
+</head>
+<body>
+
+<div id="circles"></div>
+
+<div class="container">
+  <h2>Add Product</h2>
+  <input id="name" placeholder="Product Name">
+  <input id="price" placeholder="Price">
+  <input id="image" placeholder="Image URL"><br>
+  <button onclick="addProduct()">Add Product</button>
+
+  <h2>All Products</h2>
+  <div id="productList"></div>
+
+  <h2>Orders</h2>
+  <div id="orders"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyANXW3CGn3ofb3gzb3CpXCw9oLebaAxiWI",
+    authDomain: "cartly-store.firebaseapp.com",
+    projectId: "cartly-store",
+    storageBucket: "cartly-store.firebasestorage.app",
+    messagingSenderId: "836220022823",
+    appId: "1:836220022823:web:ae9155eacd7d777df21e02",
+    measurementId: "G-65TKHGF6P8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const ordersDiv = document.getElementById("orders");
+
+async function loadOrders(){
+  const querySnapshot = await getDocs(collection(db,"orders"));
+  querySnapshot.forEach((doc)=>{
+    const order = doc.data();
+    const div = document.createElement("div");
+    div.className="order";
+    div.innerHTML = `
+      <b>Name:</b> ${order.name} <br>
+      <b>Phone:</b> ${order.phone} <br>
+      <b>Address:</b> ${order.address} <br>
+      <b>Items:</b> ${JSON.stringify(order.cart)} <br>
+      <hr>
+    `;
+    ordersDiv.appendChild(div);
+  });
+}
+
+loadOrders();
+</script>
+
+<script>
+function addProduct(){
+  const name = document.getElementById("name").value;
+  const price = document.getElementById("price").value;
+  const image = document.getElementById("image").value;
+
+  let adminProducts = JSON.parse(localStorage.getItem("adminProducts")) || [];
+  const newProduct = { id: Date.now(), name, price, image };
+  adminProducts.push(newProduct);
+  localStorage.setItem("adminProducts", JSON.stringify(adminProducts));
+  showProducts();
+}
+
+function showProducts(){
+  let adminProducts = JSON.parse(localStorage.getItem("adminProducts")) || [];
+  const list = document.getElementById("productList");
+  list.innerHTML = "";
+  adminProducts.forEach(product => {
+    list.innerHTML += `
+      <div>
+        <img src="${product.image}" width="80">
+        <p>${product.name}</p>
+        <p>₹${product.price}</p>
+        <button onclick="deleteProduct(${product.id})">Delete</button>
+      </div>
+    `;
+  });
+}
+
+function deleteProduct(id){
+  let adminProducts = JSON.parse(localStorage.getItem("adminProducts")) || [];
+  adminProducts = adminProducts.filter(p => p.id !== id);
+  localStorage.setItem("adminProducts", JSON.stringify(adminProducts));
+  showProducts();
+}
+
+showProducts();
+
+// Floating red circles
+const circlesContainer = document.getElementById("circles");
+for(let i=0;i<25;i++){
+  const c=document.createElement("div");
+  c.classList.add("floating-circle");
+  c.style.top = Math.random()*100 + "%";
+  c.style.left = Math.random()*100 + "%";
+  c.style.width = c.style.height = (10 + Math.random()*20) + "px";
+  c.style.animationDuration = (8 + Math.random()*6) + "s";
+  circlesContainer.appendChild(c);
+}
+</script>
+</body>
+</html>
