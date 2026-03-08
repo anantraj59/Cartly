@@ -21,8 +21,36 @@
 <a href="checkout.html">
 <button>Checkout</button>
 </a>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyANXW3CGn3ofb3gzb3CpXCw9oLebaAxiWI",
+    authDomain: "cartly-store.firebaseapp.com",
+    projectId: "cartly-store",
+    storageBucket: "cartly-store.firebasestorage.app",
+    messagingSenderId: "836220022823",
+    appId: "1:836220022823:web:ae9155eacd7d777df21e02",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, user => {
+    if(!user) window.location.href = "login.html";
+  });
+</script>
 <script src="cart.js"></script>
+<button onclick="logout()">Logout</button>
+<script type="module">
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  const auth = getAuth();
+  function logout() {
+    signOut(auth).then(() => window.location.href="login.html");
+  }
+  window.logout = logout;
+</script>
 
 </body>
 </html>
