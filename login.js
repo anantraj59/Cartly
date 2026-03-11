@@ -1,4 +1,30 @@
 
+window.addEventListener("load",function(){
+
+setTimeout(function(){
+
+document.getElementById("splash").style.opacity="0";
+
+setTimeout(()=>{
+document.getElementById("splash").style.display="none";
+},500);
+
+},2000);
+
+});
+
+const signUpBtn=document.getElementById("signUp");
+const signInBtn=document.getElementById("signIn");
+const container=document.getElementById("container");
+
+signUpBtn.addEventListener("click",()=>{
+container.classList.add("right-panel-active");
+});
+
+signInBtn.addEventListener("click",()=>{
+container.classList.remove("right-panel-active");
+});
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
@@ -59,12 +85,18 @@ signInWithEmailAndPassword(auth,email,password)
 
 .then((userCredential)=>{
 
-if(!userCredential.user.emailVerified){
+userCredential.user.reload().then(()=>{
 
+if(!userCredential.user.emailVerified){
 alert("Please verify your email first");
 return;
-
 }
+
+window.location.href="index.html";
+
+});
+
+})
 
 window.location.href="index.html";
 
@@ -90,3 +122,12 @@ alert("Password reset email sent");
 .catch(err=>alert(err.message));
 
 }
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+
+if(user && user.emailVerified){
+window.location.href="index.html";
+}
+
+});
