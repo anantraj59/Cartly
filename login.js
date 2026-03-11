@@ -75,7 +75,6 @@ window.location.href="index.html";
 }
 
 
-
 window.resetPassword = function(){
 
 let email = document.getElementById("email").value;
