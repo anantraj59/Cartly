@@ -212,19 +212,36 @@ right:0;
 
 </div>
 <div class="container" id="container"><div class="form-container sign-up-container">
-<form>
+  <form onsubmit="event.preventDefault(); signup();">
+
 <h2>Create Account</h2>
+
 <input type="text" placeholder="Name">
-<input type="email" placeholder="Email">
-<input type="password" placeholder="Password">
-<button>Sign Up</button>
+
+<input id="signupEmail" type="email" placeholder="Email" required>
+
+<input id="signupPassword" type="password" placeholder="Password" required>
+
+<input id="confirmPassword" type="password" placeholder="Confirm Password" required>
+
+<button type="submit">Sign Up</button>
+
 </form>
 </div><div class="form-container sign-in-container">
-<form>
-<h2>Sign in</h2>
-<input type="email" placeholder="Email">
-<input type="password" placeholder="Password">
-<button>Sign In</button>
+<form onsubmit="event.preventDefault(); login();">
+
+<h2>Sign In</h2>
+
+<input id="loginEmail" type="email" placeholder="Email" required>
+
+<input id="loginPassword" type="password" placeholder="Password" required>
+
+<button type="submit">Sign In</button>
+
+<p onclick="resetPassword()" style="margin-top:10px;cursor:pointer;color:#ff4b2b;">
+Forgot Password?
+</p>
+
 </form>
 </div><div class="overlay-container">
 <div class="overlay"><div class="overlay-panel overlay-left">
@@ -268,5 +285,27 @@ container.classList.remove("right-panel-active");
 
 </script>
 <script type="module" src="login.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyANXW3CGn3ofb3gzb3CpXCw9oLebaAxiWI",
+  authDomain: "cartly-store.firebaseapp.com",
+  projectId: "cartly-store",
+  storageBucket: "cartly-store.firebasestorage.app",
+  messagingSenderId: "836220022823",
+  appId: "1:836220022823:web:ae9155eacd7d777df21e02"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth,(user)=>{
+  if(user){
+    window.location.replace("index.html");
+  }
+});
+</script>
 </body>
 </html>
