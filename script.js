@@ -1,3 +1,4 @@
+
 let products = [];
 
 const productList = document.getElementById("products");
@@ -38,15 +39,6 @@ function renderProducts(products) {
   });
 
 }
-document.getElementById("search").addEventListener("input", function(e) {
-  const searchValue = e.target.value.toLowerCase();
-
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchValue)
-  );
-
-  renderFilteredProducts(filteredProducts);
-});
 
 function renderFilteredProducts(filtered) {
   productList.innerHTML = "";
@@ -114,34 +106,6 @@ document.getElementById("search").addEventListener("input", function(e) {
   renderFilteredProducts(filteredProducts);
 });
 
-function renderFilteredProducts(filtered) {
-  productList.innerHTML = "";
-
-  filtered.forEach(product => {
-    const div = document.createElement("div");
-    div.classList.add("product");
-
-    div.innerHTML = `
-      <h3>${product.name}</h3>
-      <p>₹${product.price}</p>
-      <button onclick="addToCart(${product.id})">Add to Cart</button>
-    `;
-
-    productList.appendChild(div);
-  });
-}
-function filterCategory(category) {
-  if (category === "all") {
-    renderFilteredProducts(products);
-    return;
-  }
-
-  const filtered = products.filter(product =>
-    product.category === category
-  );
-
-  renderFilteredProducts(filtered);
-}
 async function loadProducts(){
 
 const querySnapshot = await getDocs(collection(db,"products"));
@@ -150,9 +114,11 @@ querySnapshot.forEach((doc)=>{
 
 const product = doc.data();
 
-console.log(product);
+products.push(product);
 
 });
+
+renderProducts(products);
 
 }
 
