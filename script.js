@@ -142,3 +142,18 @@ function filterCategory(category) {
 
   renderFilteredProducts(filtered);
 }
+async function loadProducts(){
+
+const querySnapshot = await getDocs(collection(db,"products"));
+
+querySnapshot.forEach((doc)=>{
+
+const product = doc.data();
+
+console.log(product);
+
+});
+
+}
+
+loadProducts();
