@@ -1,4 +1,25 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+const firebaseConfig = {
+apiKey:"AIzaSyANXW3CGn3ofb3gzb3CpXCw9oLebaAxiWI",
+authDomain:"cartly-store.firebaseapp.com",
+projectId:"cartly-store",
+storageBucket:"cartly-store.firebasestorage.app",
+messagingSenderId:"836220022823",
+appId:"1:836220022823:web:ae9155eacd7d777df21e02"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth,(user)=>{
+if(!user){
+window.location.replace("login.html");
+}
+});
 let products = [];
 
 const productList = document.getElementById("products");
@@ -26,7 +47,7 @@ function renderProducts(products) {
     div.classList.add("product");
 
     div.innerHTML = `
-      <a href="product.html?id=${product.id}">
+      <a href="product.html?data=${encodeURIComponent(JSON.stringify(product))}">
         <img src="${product.image}" width="100%">
         <h3>${product.name}</h3>
       </a>
@@ -48,16 +69,20 @@ function renderFilteredProducts(filtered) {
     div.classList.add("product");
 
     div.innerHTML = `
-      <h3>${product.name}</h3>
-      <p>₹${product.price}</p>
-      <button onclick="addToCart(${product.id})">Add to Cart</button>
-    `;
+<img src="${product.image}">
+<h3>${product.name}</h3>
+<p>Price: ₹${product.price}</p>
+<p>${product.description || "No description available"}</p>
+<button onclick="addToCart(${product.id})">
+Add to Cart
+</button>
+`;
 
     productList.appendChild(div);
   });
 }
 
-function addToCart(id) {
+window.addToCart = function(id) {
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -108,11 +133,14 @@ document.getElementById("search").addEventListener("input", function(e) {
 
 async function loadProducts(){
 
-const querySnapshot = await getDocs(collection(db,"products"));
+const querySnapshot = await getDocs(collection(db,"Products"));
 
 querySnapshot.forEach((doc)=>{
 
-const product = doc.data();
+const product = {
+  id: doc.id,
+  ...doc.data()
+};
 
 products.push(product);
 
