@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickTools Hub - Tools</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">QuickTools Hub</div>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="tools.html">Tools</a>
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+</nav>
+
+</header>
+
+<section class="hero">
+
+<h1>Free Online Tools</h1>
+
+<p>Use our free calculators instantly.</p>
+
+</section>
+
+<!-- AGE CALCULATOR -->
+
+<section class="tools">
+
+<div class="card">
+
+<h2>Age Calculator</h2>
+
+<input type="date" id="dob">
+
+<br><br>
+
+<button class="btn" onclick="ageCalculator()">
+
+Calculate Age
+
+</button>
+
+<h3 id="ageResult"></h3>
+
+</div>
+
+<!-- Percentage Calculator -->
+
+<div class="card">
+
+<h2>Percentage Calculator</h2>
+
+<input type="number" id="obtained" placeholder="Obtained Marks">
+
+<br><br>
+
+<input type="number" id="total" placeholder="Total Marks">
+
+<br><br>
+
+<button class="btn" onclick="percentageCalculator()">
+
+Calculate
+
+</button>
+
+<h3 id="percentageResult"></h3>
+
+</div>
+
+</section>
+
+<footer>
+
+<p>© 2026 QuickTools Hub</p>
+
+</footer>
+
+<script>
+
+function ageCalculator(){
+
+let dob=document.getElementById("dob").value;
+
+if(!dob){
+
+alert("Select your Date of Birth");
+
+return;
+
+}
+
+let birth=new Date(dob);
+
+let today=new Date();
+
+let age=today.getFullYear()-birth.getFullYear();
+
+let month=today.getMonth()-birth.getMonth();
+
+if(month<0 || (month===0 && today.getDate()<birth.getDate())){
+
+age--;
+
+}
+
+document.getElementById("ageResult").innerHTML=
+
+"Your Age : <span style='color:#38bdf8'>"+age+" Years</span>";
+
+}
+
+function percentageCalculator(){
+
+let obtained=parseFloat(document.getElementById("obtained").value);
+
+let total=parseFloat(document.getElementById("total").value);
+
+if(isNaN(obtained)||isNaN(total)||total<=0){
+
+alert("Enter valid marks");
+
+return;
+
+}
+
+let result=((obtained/total)*100).toFixed(2);
+
+document.getElementById("percentageResult").innerHTML=
+
+"Percentage : <span style='color:#38bdf8'>"+result+"%</span>";
+
+}
+
+</script>
+
+</body>
+
+</html>

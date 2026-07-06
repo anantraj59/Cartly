@@ -1,153 +1,53 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+// =========================
+// QuickTools Hub Script
+// =========================
 
-const firebaseConfig = {
-apiKey:"AIzaSyANXW3CGn3ofb3gzb3CpXCw9oLebaAxiWI",
-authDomain:"cartly-store.firebaseapp.com",
-projectId:"cartly-store",
-storageBucket:"cartly-store.firebasestorage.app",
-messagingSenderId:"836220022823",
-appId:"1:836220022823:web:ae9155eacd7d777df21e02"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-onAuthStateChanged(auth,(user)=>{
-if(!user){
-window.location.replace("login.html");
+// Current Year in Footer (if element exists)
+const yearElement = document.getElementById("year");
+if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
 }
-});
-let products = [];
 
-const productList = document.getElementById("products");
+// Smooth Card Animation
+const cards = document.querySelectorAll(".card");
 
-fetch("products.json")
-.then(res => res.json())
-.then(jsonProducts => {
-
-   const adminProducts =
-     JSON.parse(localStorage.getItem("adminProducts")) || [];
-
-   products = [...jsonProducts, ...adminProducts];
-
-   renderProducts(products);
-
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+        }
+    });
+}, {
+    threshold: 0.15
 });
 
-function renderProducts(products) {
-
-  productList.innerHTML = "";
-
-  products.forEach(product => {
-
-    const div = document.createElement("div");
-    div.classList.add("product");
-
-    div.innerHTML = `
-      <a href="product.html?data=${encodeURIComponent(JSON.stringify(product))}">
-        <img src="${product.image}" width="100%">
-        <h3>${product.name}</h3>
-      </a>
-      <p>₹${product.price}</p>
-      <button onclick="addToCart(${product.id})">Add to Cart</button>
-    `;
-
-    productList.appendChild(div);
-
-  });
-
-}
-
-function renderFilteredProducts(filtered) {
-  productList.innerHTML = "";
-
-  filtered.forEach(product => {
-    const div = document.createElement("div");
-    div.classList.add("product");
-
-    div.innerHTML = `
-<img src="${product.image}">
-<h3>${product.name}</h3>
-<p>Price: ₹${product.price}</p>
-<p>${product.description || "No description available"}</p>
-<button onclick="addToCart(${product.id})">
-Add to Cart
-</button>
-`;
-
-    productList.appendChild(div);
-  });
-}
-
-window.addToCart = function(id) {
-
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-const product = products.find(p => p.id == id);
-
-if (!product) {
-  alert("Product not found");
-  return;
-}
-
-const existingProduct = cart.find(item => item.id == id);
-
-if (existingProduct) {
-  existingProduct.quantity += 1;
-} else {
-  cart.push({ ...product, quantity: 1 });
-}
-
-localStorage.setItem("cart", JSON.stringify(cart));
-
-updateCartCount();
-
-alert("Added to cart");
-
-}
-function updateCartCount(){
-
-const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-let total = 0;
-
-cart.forEach(item=>{
-total += item.quantity || 1;
+cards.forEach(card => {
+    card.style.opacity = "0";
+    card.style.transform = "translateY(40px)";
+    card.style.transition = "0.6s ease";
+    observer.observe(card);
 });
 
-document.getElementById("cart-count").innerText = total;
+// Button Click Effect
+const buttons = document.querySelectorAll(".btn");
 
-}
-document.getElementById("search").addEventListener("input", function(e) {
-  const searchValue = e.target.value.toLowerCase();
+buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchValue)
-  );
+        btn.style.transform = "scale(.95)";
 
-  renderFilteredProducts(filteredProducts);
+        setTimeout(() => {
+            btn.style.transform = "scale(1)";
+        }, 150);
+
+    });
 });
 
-async function loadProducts(){
+// Console Welcome
+console.log("QuickTools Hub Loaded Successfully");
 
-const querySnapshot = await getDocs(collection(db,"Products"));
-
-querySnapshot.forEach((doc)=>{
-
-const product = {
-  id: doc.id,
-  ...doc.data()
-};
-
-products.push(product);
-
-});
-
-renderProducts(products);
-
+// Future Functions Placeholder
+function comingSoon() {
+    alert("This tool will be available soon.");
 }
-
-loadProducts();
